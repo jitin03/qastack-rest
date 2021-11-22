@@ -2,9 +2,9 @@ package project
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/jinzhu/gorm"
-	"github.com/jitin07/qastack/internal/release"
 )
 
 
@@ -12,16 +12,24 @@ type Service struct{
 	DB *gorm.DB
 }
 
+type Users struct {
+	User_Id int		`gorm:"primary_key, AUTO_INCREMENT"`
+	Username string
+	Password string
+	Email string
+	Role string
+	Project []Project `gorm:"ForeignKey:User_Id"`
+}
 
 type Project struct{
 	gorm.Model
 	Name string
-	Release []release.Release	`gorm:"-"`
+	User_Id int
 }
 
 
 type ProjectService interface{
-	GetAllProjects([]Project,error)
+	GetAllProjects(userId int)([]Project,error)
 	AddProject(project Project) (Project,error)
 	UpdateProject(ID uint,newProject Project)(Project,error)
 	DeleteProject(ID uint)(error)
@@ -37,10 +45,10 @@ func NewService(db *gorm.DB) *Service {
 }
 
 
-func(s *Service)GetAllProjects()([]Project,error){
+func(s *Service)GetAllProjects(userId int)([]Project,error){
 	var projects []Project
-
-	if result :=s.DB.Find(&projects);result.Error !=nil{
+	fmt.Printf("%s",userId)
+	if result :=s.DB.Find(&projects,Project{User_Id: userId});result.Error !=nil{
 		return projects, result.Error
 	}
 
@@ -50,12 +58,12 @@ func(s *Service)GetAllProjects()([]Project,error){
 
 func(s *Service)GetProject(ID uint) (Project,error){
 	var project Project
-	var releases []release.Release
+	var users []Users
 
 	result :=s.DB.First(&project,ID)
-	s.DB.Model(&project).Related(&releases)
+	s.DB.Model(&project).Related(&users)
 
-	project.Release = releases
+	//project.Release = users
 	if result.Error !=nil{
 		fmt.Println(ID)
 		return Project{},result.Error
@@ -87,9 +95,13 @@ func(s *Service) UpdateProject(ID uint,newProject Project)(Project,error){
 
 
 func(s *Service)AddProject(project Project) (Project,error){
-	fmt.Println(project)
+	log.Info(project.Name)
+	log.Info(project.User_Id)
 	if result := s.DB.Save(&project); result.Error != nil {
 		return Project{}, result.Error
+	}else{
+		log.Info(result)
 	}
+
 	return project, nil
 }

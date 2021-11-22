@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -14,8 +15,13 @@ import (
 
 // Getproject handler- retriever by id integration of project servie + database object
 func(h *Handler) GetProject(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	if r.Method == http.MethodOptions {
 
-	response.SetupCorsResponse(&w,r)
+		return
+	}
+	
+
 	params := mux.Vars(r)
 	// convert the id type from string to int
 	id, err := strconv.Atoi(params["id"])
@@ -29,7 +35,11 @@ func(h *Handler) GetProject(w http.ResponseWriter, r *http.Request){
 
 
 func(h * Handler)DeleteProject(w http.ResponseWriter,r *http.Request){
-	response.SetupCorsResponse(&w,r)
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	if r.Method == http.MethodOptions {
+
+		return
+	}
 
 	params := mux.Vars(r)
 	// convert the id type from string to int
@@ -45,9 +55,14 @@ func(h * Handler)DeleteProject(w http.ResponseWriter,r *http.Request){
 }
 
 func (h *Handler) GetAllProjects(w http.ResponseWriter, r *http.Request){
-	response.SetupCorsResponse(&w,r)
-
-	project,err :=h.Service.GetAllProjects()
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	if r.Method == http.MethodOptions {
+		return
+	}
+	query := r.URL.Query()
+	filters := query.Get("userid")
+	id, err := strconv.Atoi(filters)
+	project,err :=h.Service.GetAllProjects(id)
 	if err !=nil{
 		response.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -57,27 +72,40 @@ func (h *Handler) GetAllProjects(w http.ResponseWriter, r *http.Request){
 
 
 func(h * Handler) AddProject(w http.ResponseWriter, r * http.Request){
-	response.SetupCorsResponse(&w,r)
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	log.Info(r.Method)
+	if r.Method == http.MethodOptions {
+
+		 response.JSON(w,200,"true")
+	}
 	// get the body of our POST request
     // return the string response containing the request body    
     reqBody, _ := ioutil.ReadAll(r.Body)
-	var newProject project.Project 
+	var newProject project.Project
+	log.Info(reqBody)
+
     json.Unmarshal(reqBody, &newProject)
-	
+
+
 	project,err :=h.Service.AddProject(newProject)
 	if err !=nil{
 		response.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	response.JSON(w,http.StatusOK,project)
+	response.JSON(w,200,project)
 }
 
 
 func(h * Handler) UpdateProject(w http.ResponseWriter, r * http.Request){
-	response.SetupCorsResponse(&w,r)
-	params := mux.Vars(r)
 
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+
+	params := mux.Vars(r)
+	if r.Method == http.MethodOptions {
+
+		response.JSON(w,200,"true")
+	}
 
 	// convert the id type from string to int
 	projectId, err := strconv.Atoi(params["id"])

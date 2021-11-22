@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-
-	"net/http"
-
 	"github.com/jinzhu/gorm"
+	"github.com/rs/cors"
+
 	project "github.com/jitin07/qastack/internal/project"
 	release "github.com/jitin07/qastack/internal/release"
 	database "github.com/jitin07/qastack/internal/repository"
 	transportHttp "github.com/jitin07/qastack/internal/transport/http"
+
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 // App- contains application information
@@ -54,7 +55,18 @@ func(app *App) Run() error{
 	handler :=transportHttp.NewHandler(projectService,releaseService)
 	handler.SetupRouter()
 
-	if err := http.ListenAndServe(":8080", handler.Router); err != nil {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:3000"},
+		AllowedHeaders: []string{"X-Requested-With", "Content-Type", "Authorization","Referer"},
+		AllowCredentials: true,
+		AllowedMethods: []string{"GET","PUT","DELETE","POST","OPTIONS"},
+	})
+
+	handlers :=c.Handler(handler.Router)
+
+
+
+	if err := http.ListenAndServe(":8080", handlers); err != nil {
 		fmt.Println("Failed to set up server")
 		return err
 	}

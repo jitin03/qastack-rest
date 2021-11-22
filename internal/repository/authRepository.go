@@ -20,11 +20,12 @@ func (r RemoteAuthRepository) IsAuthorized(token string, routeName string, vars 
 
 	u := buildVerifyURL(token, routeName, vars)
 	log.Info(u)
-	if response, err := http.Get("http://localhost:8090/api/health"); err != nil {
+	if response, err := http.Get(u); err != nil {
 		fmt.Println("Error while sending..." + err.Error())
 		return false
 	} else {
 		m := map[string]bool{}
+		log.Info(response.Body)
 		if err = json.NewDecoder(response.Body).Decode(&m); err != nil {
 			log.Error("Error while decoding response from auth server:" + err.Error())
 			return false
@@ -44,7 +45,7 @@ func (r RemoteAuthRepository) IsAuthorized(token string, routeName string, vars 
   Sample: /auth/verify?token=aaaa.bbbb.cccc&routeName=MakeTransaction&customer_id=2000&account_id=95470
 */
 func buildVerifyURL(token string, routeName string, vars map[string]string) string {
-	u := url.URL{Host: "localhost:8090", Path: "/auth/verify", Scheme: "http"}
+	u := url.URL{Host: "localhost:8090", Path: "/auth/verify", Scheme: "http",}
 	q := u.Query()
 	q.Add("token", token)
 	q.Add("routeName", routeName)
