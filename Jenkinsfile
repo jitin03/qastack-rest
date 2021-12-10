@@ -42,7 +42,7 @@ pipeline {
             sh 'docker build -t stack-rest .'
             sh 'docker image list'
             sh 'docker tag stack-rest mehuljitin/stack-rest:stack-rest'
-            sh 'docker run -d -e DB_USER=$DB_USER -e DB_PASSWD=$DB_PASSWD -e DB_ADDR=$DB_ADDR -e DB_NAME=$DB_NAME -p 8092:8092 stack-rest'
+            sh 'docker run -d -e DB_USER=$DB_USER -e DB_PASSWD=$DB_PASSWD -e DB_ADDR=$DB_ADDR -e DB_NAME=$DB_NAME -p 8091:8091 stack-rest'
             }
         }
 
