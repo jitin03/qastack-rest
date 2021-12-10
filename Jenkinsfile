@@ -10,7 +10,7 @@ pipeline {
         CGO_ENABLED = 0
         GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
         DB_PASSWD = 'Home@302017'
-        DB_ADDR = '54.237.251.167'
+        DB_ADDR = '3.229.43.168'
         DB_PORT = 5432
         DB_NAME = 'postgres'
         DB_USER = 'postgres'
