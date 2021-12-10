@@ -66,7 +66,7 @@ func(app *App) Run() error{
 
 
 
-	if err := http.ListenAndServe(":8080", handlers); err != nil {
+	if err := http.ListenAndServe(":8092", handlers); err != nil {
 		fmt.Println("Failed to set up server")
 		return err
 	}
