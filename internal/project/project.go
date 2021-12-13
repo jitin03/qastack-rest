@@ -2,6 +2,7 @@ package project
 
 import (
 	"fmt"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/jinzhu/gorm"
@@ -22,7 +23,7 @@ type Users struct {
 }
 
 type Project struct{
-	gorm.Model
+	Id string
 	Name string
 	User_Id int
 }
