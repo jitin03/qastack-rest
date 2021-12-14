@@ -57,12 +57,12 @@ func(s *Service)GetAllProjects(userId int)([]Project,error){
 }
 
 
-func(s *Service)GetProject(ID uint) (Project,error){
+func(s *Service)GetProject(ID string) (Project,error){
 	var project Project
-	var users []Users
+	// var users []Users
 
-	result :=s.DB.First(&project,ID)
-	s.DB.Model(&project).Related(&users)
+	result :=s.DB.First(&project,Project{Id:ID})
+	// s.DB.Model(&project).Related(&users)
 
 	//project.Release = users
 	if result.Error !=nil{
@@ -73,14 +73,14 @@ func(s *Service)GetProject(ID uint) (Project,error){
 	return project,nil
 }
 
-func(s *Service)DeleteProject(ID uint)(error){
-	if result := s.DB.Delete(&Project{}, ID); result.Error != nil {
+func(s *Service)DeleteProject(ID string)(error){
+	if result := s.DB.Delete(&Project{}, Project{Id:ID}); result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func(s *Service) UpdateProject(ID uint,newProject Project)(Project,error){
+func(s *Service) UpdateProject(ID string,newProject Project)(Project,error){
 
 	project, err := s.GetProject(ID)
 	if err != nil {

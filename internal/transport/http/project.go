@@ -2,11 +2,11 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gorilla/mux"
 	"github.com/jitin07/qastack/internal/project"
@@ -24,8 +24,8 @@ func(h *Handler) GetProject(w http.ResponseWriter, r *http.Request){
 
 	params := mux.Vars(r)
 	// convert the id type from string to int
-	id, err := strconv.Atoi(params["id"])
-	project,err := h.Service.GetProject(uint(id))
+	// id, err := strconv.Atoi(params["id"])
+	project,err := h.Service.GetProject(params["id"])
 	if err !=nil{
 		response.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -43,10 +43,10 @@ func(h * Handler)DeleteProject(w http.ResponseWriter,r *http.Request){
 
 	params := mux.Vars(r)
 	// convert the id type from string to int
-	id, err := strconv.Atoi(params["id"])
+	// id, err := strconv.Atoi(params["id"])
 
-	error :=h.Service.DeleteProject(uint(id))
-	if err !=nil{
+	error :=h.Service.DeleteProject(params["id"])
+	if error !=nil{
 		response.ERROR(w, http.StatusInternalServerError, error)
 		return
 	}
@@ -108,16 +108,16 @@ func(h * Handler) UpdateProject(w http.ResponseWriter, r * http.Request){
 	}
 
 	// convert the id type from string to int
-	projectId, err := strconv.Atoi(params["id"])
-	if err!=nil{
-		response.ERROR(w, http.StatusInternalServerError, err)
-		return
-	}
-	fmt.Println(projectId)
+	// projectId, err := strconv.Atoi(params["id"])
+	// if err!=nil{
+	// 	response.ERROR(w, http.StatusInternalServerError, err)
+	// 	return
+	// }
+	// fmt.Println(projectId)
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var newProject project.Project 
     json.Unmarshal(reqBody, &newProject)
-	project,err :=h.Service.UpdateProject(uint(projectId),newProject)
+	project,err :=h.Service.UpdateProject(params["id"],newProject)
 	if err !=nil{
 		response.ERROR(w, http.StatusInternalServerError, err)
 		return
