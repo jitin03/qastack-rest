@@ -14,6 +14,7 @@ pipeline {
         DB_PORT = 5432
         DB_NAME = 'postgres'
         DB_USER = 'postgres'
+        AUTH_SERVER='34.201.1.56'
     }
     stages {
 //          stage("Git Clone"){
@@ -42,7 +43,7 @@ pipeline {
             sh 'docker build -t stack-rest .'
             sh 'docker image list'
             sh 'docker tag stack-rest mehuljitin/stack-rest:stack-rest'
-            sh 'docker run -d -e DB_USER=$DB_USER -e DB_PASSWD=$DB_PASSWD -e DB_ADDR=$DB_ADDR -e DB_NAME=$DB_NAME -p 8091:8091 stack-rest'
+            sh 'docker run -d -e AUTH_SERVER=$AUTH_SERVER -e DB_USER=$DB_USER -e DB_PASSWD=$DB_PASSWD -e DB_ADDR=$DB_ADDR -e DB_NAME=$DB_NAME -p 8091:8091 stack-rest'
             }
         }
 
