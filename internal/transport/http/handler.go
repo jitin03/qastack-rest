@@ -105,7 +105,7 @@ func (h *Handler) UpdateRelease(w http.ResponseWriter, r *http.Request) {
 
 }
 func (h *Handler) DeleteRelease(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodOptions {
 
 		return
