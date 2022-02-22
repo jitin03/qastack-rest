@@ -2,6 +2,7 @@ package project
 
 import (
 	"fmt"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -26,6 +27,8 @@ type Project struct {
 	Name      string
 	User_Id   int
 	Is_Active bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type ProjectService interface {
